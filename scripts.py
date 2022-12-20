@@ -8,8 +8,7 @@ from datacenter.models import (
     Commendation
 ) 
 
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.exceptions import MultipleObjectsReturned
+from django.db.models import Model
 
 
 def fix_marks(schoolkid):
@@ -23,7 +22,7 @@ def remove_chastisements(schoolkid):
 
 
 def create_commendation(schoolkid_name, subject_title):
-    commends = [
+    commendations = [
         'Сказано здорово - просто и ясно!', 'Очень хороший ответ!',
         'Талантливо!', 'Ты сегодня прыгнул выше головы!',
         'Я поражен!', 'Уже существенно лучше!', 'Потрясающе!',
@@ -38,7 +37,7 @@ def create_commendation(schoolkid_name, subject_title):
         schoolkid = Schoolkid.objects.get(
             full_name__contains=schoolkid_name,
         )
-    except (ObjectDoesNotExist, MultipleObjectsReturned) as error:
+    except (Model.DoesNotExist, Model.MultipleObjectsReturned) as error:
         print(f'Error: {error}')
         exit(1)
     lessons = Lesson.objects.filter(
@@ -50,14 +49,13 @@ def create_commendation(schoolkid_name, subject_title):
         print("Error: Wrong lesson's name or lesson does not exist")
         exit(1)
     random_lesson = lessons.order_by('?').first()
-    commend = Commendation.objects.create(
-        text = random.choice(commends),
+    commendation = Commendation.objects.create(
+        text = random.choice(commendations),
         created = random_lesson.date,
         schoolkid = schoolkid,
         subject = random_lesson.subject,
         teacher = random_lesson.teacher
     )
-    return commend
+    return commendation
 
 
-# scripts.create_commendation('Фролов Иван', 'Музыка')
