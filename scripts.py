@@ -8,8 +8,6 @@ from datacenter.models import (
     Commendation
 ) 
 
-from django.db.models import Model
-
 
 def fix_marks(schoolkid):
     bad_marks = Mark.objects.filter(schoolkid=schoolkid, points__lt=4)
@@ -37,7 +35,7 @@ def create_commendation(schoolkid_name, subject_title):
         schoolkid = Schoolkid.objects.get(
             full_name__contains=schoolkid_name,
         )
-    except (Model.DoesNotExist, Model.MultipleObjectsReturned) as error:
+    except (Schoolkid.DoesNotExist, Schoolkid.MultipleObjectsReturned) as error:
         print(f'Error: {error}')
         exit(1)
     lessons = Lesson.objects.filter(
@@ -57,5 +55,3 @@ def create_commendation(schoolkid_name, subject_title):
         teacher = random_lesson.teacher
     )
     return commendation
-
-
